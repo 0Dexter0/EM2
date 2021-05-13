@@ -4,9 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EM2"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Background="#27282a"
         Title="EM2" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style x:Key="MenuItemStyle">
+            <Setter Property="Control.Foreground" Value="White"/>
+            <Setter Property="Control.Background" Value="#27282a"/>
+            <Setter Property="Control.Margin" Value="2"/>
+            <Setter Property="Control.HorizontalAlignment" Value="Center"/>
+            <Setter Property="Control.VerticalAlignment" Value="Center"/>
+            <Setter Property="Control.FontSize" Value="15"/>
+        </Style>
+        <Style x:Key="ImplMenuItemStyle">
+            <Setter Property="Control.Foreground" Value="Black"/>
+            <Setter Property="Control.Background" Value="#f0f0f0"/>
+            <Setter Property="Control.Margin" Value="2"/>
+            <Setter Property="Control.HorizontalAlignment" Value="Left"/>
+            <Setter Property="Control.VerticalAlignment" Value="Center"/>
+            <Setter Property="Control.FontSize" Value="15"/>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,16 +36,35 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <Menu Background="#27282a">
-                <MenuItem Name="MIWindows" Header="Windows" Background="#27282a"
-                          Foreground="White" Margin="2" FontSize="15"
-                          VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <MenuItem Name="MIRegisters" Header="Registers"
-                              Foreground="White" Background="#27282a"
-                              MouseEnter="MI_MouseEnter"
-                              MouseLeave="MI_MouseLeave"/>
-                </MenuItem>
-            </Menu>
+            <DockPanel Background="#27282a">
+                <Menu Background="#27282a">
+                    <MenuItem Name="MIFile" Header="File"
+                              Style="{StaticResource MenuItemStyle}">
+                        <MenuItem Name="MIOpen" Header="Open" Click="MIOpen_OnClick"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                        <MenuItem Name="MISave" Header="Save"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                        <Separator BorderBrush="Black"/>
+                        <MenuItem Name="MIExit" Header="Exit" Click="MIExit_OnClick"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                    </MenuItem>
+                    <MenuItem Name="MIWindows" Header="Windows"
+                              Style="{StaticResource MenuItemStyle}">
+                        <MenuItem Name="MIRegisters" Header="Registers"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                    </MenuItem>
+                    <MenuItem Name="MIDebugging" Header="Debugging"
+                              Style="{StaticResource MenuItemStyle}">
+                        <MenuItem Name="MIStart" Header="Start"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                        <MenuItem Name="MIDebug" Header="Debug"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                        <MenuItem Name="MIReload" Header="Reload"
+                                  Style="{StaticResource ImplMenuItemStyle}"/>
+                    </MenuItem>
+                </Menu>
+            </DockPanel>
+            
         </Grid>
 
         <Grid Grid.Row="1">

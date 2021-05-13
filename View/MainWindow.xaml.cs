@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace EM2.View
 {
@@ -30,16 +32,14 @@ namespace EM2.View
 
         private void MI_MouseLeave(object sender, MouseEventArgs e)
         {
-            SolidColorBrush solidColor = new();
-            solidColor.Color = new Color() { R = 20, G = 20, B = 20 };
+            SolidColorBrush solidColor = new() {Color = new Color() {R = 20, G = 20, B = 20}};
             MIWindows.Background = solidColor;
             MIRegisters.Background = solidColor;
         }
 
         private void MI_MouseEnter(object sender, MouseEventArgs e)
         {
-            SolidColorBrush solidColor = new();
-            solidColor.Color = new Color() { R = 20, G = 20, B = 20 };
+            SolidColorBrush solidColor = new() {Color = new Color() {R = 20, G = 20, B = 20}};
             MIWindows.Background = solidColor;
             MIRegisters.Background = solidColor;
             MIRegisters.Foreground = Brushes.Black;
@@ -51,7 +51,7 @@ namespace EM2.View
             {
                 TBInput.IsEnabled = false;
 
-                TimerCallback callback = new(ClearTBInfo);
+                TimerCallback callback = new(ClearTbInfo);
                 Timer timer = new(callback, null, 2000, 0);
 
                 TBInfo.Text = "Saved";
@@ -67,7 +67,7 @@ namespace EM2.View
             }
         }
 
-        private void ClearTBInfo(object o)
+        private void ClearTbInfo(object o)
         {
             Dispatcher.Invoke(() => TBInfo.Text = "");
         }
@@ -91,6 +91,50 @@ namespace EM2.View
                     FontSize = 15
                 });
             }
+            else if (e.Key == Key.Back)
+            {
+                int numLines = GetNumLines(TBInput.Text);
+
+                if (numLines < EnterPressed && EnterPressed > 1)
+                {
+                    SPIndex.Children.RemoveAt(EnterPressed - 1);
+                    EnterPressed--;
+                }
+            }
+        }
+
+
+
+        private int GetNumLines(string str)
+        {
+            int count = 0;
+
+            foreach (char c in str)
+            {
+                if (c == '\n') count++;
+            }
+
+            return count;
+        }
+
+        private void MIExit_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MIOpen_OnClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new();
+
+            openFile.ShowDialog();
+
+            string path = openFile.FileName;
+
+            using (StreamReader reader = new(path))
+            {
+                TBInput.Text = reader.ReadToEnd();
+            }
+
         }
     }
 }
