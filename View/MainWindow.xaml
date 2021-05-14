@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EM2"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModel="clr-namespace:EM2.ViewModel"
         mc:Ignorable="d"
         Background="#27282a"
         Title="EM2" Height="450" Width="800">
@@ -36,35 +36,33 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <DockPanel Background="#27282a">
-                <Menu Background="#27282a">
-                    <MenuItem Name="MIFile" Header="File"
-                              Style="{StaticResource MenuItemStyle}">
-                        <MenuItem Name="MIOpen" Header="Open" Click="MIOpen_OnClick"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                        <MenuItem Name="MISave" Header="Save"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                        <Separator BorderBrush="Black"/>
-                        <MenuItem Name="MIExit" Header="Exit" Click="MIExit_OnClick"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                    </MenuItem>
-                    <MenuItem Name="MIWindows" Header="Windows"
-                              Style="{StaticResource MenuItemStyle}">
-                        <MenuItem Name="MIRegisters" Header="Registers"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                    </MenuItem>
-                    <MenuItem Name="MIDebugging" Header="Debugging"
-                              Style="{StaticResource MenuItemStyle}">
-                        <MenuItem Name="MIStart" Header="Start"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                        <MenuItem Name="MIDebug" Header="Debug"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                        <MenuItem Name="MIReload" Header="Reload"
-                                  Style="{StaticResource ImplMenuItemStyle}"/>
-                    </MenuItem>
-                </Menu>
-            </DockPanel>
-            
+            <Menu Background="#27282a">
+                <MenuItem Name="MiFile" Header="File"
+                          Style="{StaticResource MenuItemStyle}">
+                    <MenuItem Name="MiOpen" Header="Open" Click="MIOpen_OnClick"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                    <MenuItem Name="MiSave" Header="Save" Click="MISave_OnClick"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                    <Separator BorderBrush="Black"/>
+                    <MenuItem Name="MiExit" Header="Exit" Click="MIExit_OnClick"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                </MenuItem>
+                <MenuItem Name="MiWindows" Header="Windows"
+                          Style="{StaticResource MenuItemStyle}">
+                    <MenuItem Name="MiRegisters" Header="Registers"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                </MenuItem>
+                <MenuItem Name="MiDebugging" Header="Debugging"
+                          Style="{StaticResource MenuItemStyle}">
+                    <MenuItem Name="MiStart" Header="Start"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                    <MenuItem Name="MiDebug" Header="Debug"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                    <MenuItem Name="MiReload" Header="Reload" Click="MIReload_OnClick"
+                              Style="{StaticResource ImplMenuItemStyle}"/>
+                </MenuItem>
+            </Menu>
+
         </Grid>
 
         <Grid Grid.Row="1">
@@ -74,29 +72,35 @@
                 <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Name="SPIndex">
+            <StackPanel Grid.Column="0" Name="SpIndex">
                 <TextBlock Text="1" FontSize="15"
                            Padding="8,5,0,0" Foreground="White"/>
             </StackPanel>
             
-            <TextBox Name="TBInput" TextWrapping="Wrap" Grid.Column="1" 
+            <TextBox Name="TbInput" TextWrapping="Wrap" Grid.Column="1" 
                      AcceptsReturn="True" KeyDown="TBInput_KeyDown"
                      BorderBrush="Black" Margin="5"
                      Background="#141414" FontSize="15"
                      Foreground="White"
                      MouseEnter="TBInput_MouseEnter"
-                     KeyUp="TBInput_KeyUp"/>
+                     KeyUp="TBInput_KeyUp"
+                     Text="{Binding FileContent}"/>
         </Grid>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="1" Name="TBInfo"
-                       VerticalAlignment="Center" HorizontalAlignment="Center"
+            <TextBlock Grid.Column="1" Name="TbInfo"
+                       VerticalAlignment="Top" HorizontalAlignment="Center"
                        FontSize="25" Foreground="White"/>
+            <TextBlock Grid.Column="2" Name="TbFileName"
+                       VerticalAlignment="Top" HorizontalAlignment="Center"
+                       Foreground="White" FontSize="25"
+                       Margin="0, 0, 30, 0"/>
         </Grid>
     </Grid>
 </Window>

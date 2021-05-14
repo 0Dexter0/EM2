@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using EM2.ViewModel;
 
 namespace EM2.View
 {
@@ -24,57 +25,57 @@ namespace EM2.View
     public partial class MainWindow : Window
     {
         private int EnterPressed { get; set; } = 1;
+        private string FilePath { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = new Em2ViewModel();
         }
 
         private void MI_MouseLeave(object sender, MouseEventArgs e)
         {
             SolidColorBrush solidColor = new() {Color = new Color() {R = 20, G = 20, B = 20}};
-            MIWindows.Background = solidColor;
-            MIRegisters.Background = solidColor;
+            MiWindows.Background = solidColor;
+            MiRegisters.Background = solidColor;
         }
 
         private void MI_MouseEnter(object sender, MouseEventArgs e)
         {
             SolidColorBrush solidColor = new() {Color = new Color() {R = 20, G = 20, B = 20}};
-            MIWindows.Background = solidColor;
-            MIRegisters.Background = solidColor;
-            MIRegisters.Foreground = Brushes.Black;
+            MiWindows.Background = solidColor;
+            MiRegisters.Background = solidColor;
+            MiRegisters.Foreground = Brushes.Black;
         }
 
         private void TBInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.S)
             {
-                TBInput.IsEnabled = false;
+                TbInput.IsEnabled = false;
 
-                TimerCallback callback = new(ClearTbInfo);
-                Timer timer = new(callback, null, 2000, 0);
+                SaveFile();
 
-                TBInfo.Text = "Saved";
-               
-                TBInput.IsEnabled = true;
+                ShowSave();
+
+                TbInput.IsEnabled = true;
             }
             if (e.Key == Key.Return)
             {
-                
-
                 EnterPressed++;
-                TBInfo.Text = EnterPressed.ToString();
+                TbInfo.Text = EnterPressed.ToString();
             }
         }
 
         private void ClearTbInfo(object o)
         {
-            Dispatcher.Invoke(() => TBInfo.Text = "");
+            Dispatcher.Invoke(() => TbInfo.Text = "");
         }
 
         private void TBInput_MouseEnter(object sender, MouseEventArgs e)
         {
-            TBInput.BorderBrush = Brushes.Black;
+            TbInput.BorderBrush = Brushes.Black;
         }
 
         private void TBInput_KeyUp(object sender, KeyEventArgs e)
@@ -83,7 +84,7 @@ namespace EM2.View
             {
                 EnterPressed++;
 
-                SPIndex.Children.Add(new TextBlock()
+                SpIndex.Children.Add(new TextBlock()
                 {
                     Text = EnterPressed.ToString(),
                     Padding = new Thickness(8, 0, 0, 0),
@@ -93,21 +94,18 @@ namespace EM2.View
             }
             else if (e.Key == Key.Back)
             {
-                int numLines = GetNumLines(TBInput.Text);
+                int numLines = GetNumLines(TbInput.Text);
 
                 if (numLines < EnterPressed && EnterPressed > 1)
                 {
-                    SPIndex.Children.RemoveAt(EnterPressed - 1);
-                    EnterPressed--;
+                    SpIndex.Children.RemoveAt(--EnterPressed);
                 }
             }
         }
 
-
-
         private int GetNumLines(string str)
         {
-            int count = 0;
+            int count = 1;
 
             foreach (char c in str)
             {
@@ -124,17 +122,124 @@ namespace EM2.View
 
         private void MIOpen_OnClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFile = new();
+            var fileContent = string.Empty;
 
-            openFile.ShowDialog();
-
-            string path = openFile.FileName;
-
-            using (StreamReader reader = new(path))
+            OpenFileDialog openFileDialog = new();
+            openFileDialog.Filter = "Txt files (*.txt)|*.txt|EM2 files (*.em2)|*.em2";
+            openFileDialog.FilterIndex = 2;
+            openFileDialog.RestoreDirectory = true;
+            
+            if (openFileDialog.ShowDialog() == true)
             {
-                TBInput.Text = reader.ReadToEnd();
+                FilePath = openFileDialog.FileName;
+
+                var fileStream = openFileDialog.OpenFile();
+
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    fileContent = reader.ReadToEnd();
+                }
             }
 
+            TbInput.Text = fileContent;
+            TbFileName.Text = GetFileName();
+            
+            Reload();
+        }
+
+        private string GetFileName()
+        {
+            var str = FilePath.Split("\\");
+
+            return str[^1];
+        }
+
+        private void MISave_OnClick(object sender, RoutedEventArgs e)
+        {
+            SaveFile();
+
+            ShowSave();
+        }
+
+        private void SaveFile()
+        {
+            Stream myStream;
+            SaveFileDialog saveFile = new();
+
+            saveFile.Filter = "Txt files (*.txt)|*.txt|EM2 files (*.em2)|*.em2";
+            saveFile.FilterIndex = 2;
+            saveFile.RestoreDirectory = true;
+            saveFile.OverwritePrompt = false;
+
+            if (FilePath == null)
+            {
+                if (saveFile.ShowDialog() == true)
+                {
+                    myStream = saveFile.OpenFile();
+
+                    using (StreamWriter writer = new(myStream))
+                    {
+                        writer.WriteLine(TbInput.Text);
+                    }
+
+                    myStream.Close();
+                }
+            }
+            else
+            {
+                saveFile.FileName = FilePath;
+
+                myStream = saveFile.OpenFile();
+
+                using (StreamWriter writer = new(myStream))
+                {
+                    writer.WriteLine(TbInput.Text);
+                }
+
+                myStream.Close();
+
+            }
+        }
+
+        private void ShowSave()
+        {
+            TbInfo.Text = "Saved";
+
+            TimerCallback callback = new(ClearTbInfo);
+            Timer timer = new(callback, null, 2000, 0);
+        }
+
+        private void Reload()
+        {
+            int numLines = GetNumLines(TbInput.Text);
+
+            if (numLines < EnterPressed)
+            {
+                while (numLines < EnterPressed && EnterPressed > 1)
+                {
+                    SpIndex.Children.RemoveAt(--EnterPressed);
+                }
+            }
+            else if (numLines > EnterPressed)
+            {
+                while (numLines > EnterPressed)
+                {
+                    SpIndex.Children.Add(new TextBlock()
+                    {
+                        Text = (++EnterPressed).ToString(),
+                        Padding = new Thickness(8, 0, 0, 0),
+                        Foreground = Brushes.White,
+                        FontSize = 15
+                    });
+                }
+            }
+
+            TbInfo.Text = "";
+        }
+
+        private void MIReload_OnClick(object sender, RoutedEventArgs e)
+        {
+            Reload();
         }
     }
 }
