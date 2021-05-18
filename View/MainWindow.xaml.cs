@@ -15,9 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
-using EM2.ViewModel;
+using EM3.ViewModel;
 
-namespace EM2.View
+namespace EM3.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -31,7 +31,7 @@ namespace EM2.View
         {
             InitializeComponent();
 
-            DataContext = new Em2ViewModel();
+            DataContext = new Em3ViewModel();
         }
 
         private void MI_MouseLeave(object sender, MouseEventArgs e)

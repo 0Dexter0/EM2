@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EM2", "EM2.csproj", "{00321A49-8467-4CED-AA9B-1CFD00EF5EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EM3", "EM3.csproj", "{00321A49-8467-4CED-AA9B-1CFD00EF5EDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

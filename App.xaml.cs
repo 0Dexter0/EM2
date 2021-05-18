@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace EM2
+namespace EM3
 {
     /// <summary>
     /// Interaction logic for App.xaml
