@@ -9,7 +9,7 @@ Create variable
 [CrtVarD] [Name:string | Register:int | Value:double]
 
 Sum of variables
-[Sum] [Result register:int | Num1 | Num2]
+[Sum] [Result register:int | Num1 | Num2]\n
 [Sum] [Result register:int | Register num:int | Num2]
 [Sum] [Result register:int | Num1 | Register num:int]
 [Sum] [Result register:int | Register num:int | Register num:int]
