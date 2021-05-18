@@ -3,8 +3,8 @@
 Commands:
 
 Create variable
-<CrtVarI> [Name:string | Register:int | Value:int]
-<CrtVarD> [Name:string | Register:int | Value:double]
+[CrtVarI] [Name:string | Register:int | Value:int]
+[CrtVarD] [Name:string | Register:int | Value:double]
 
 Sum of variables
 <Sum> [Result register:int | Num1 | Num2]
