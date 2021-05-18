@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace EM3
 {
-    class Em3Command : ICommand
+    public class Em3Command : ICommand
     {
         private readonly Action<object> _execute;
         private readonly Func<object, bool> _canExecute;

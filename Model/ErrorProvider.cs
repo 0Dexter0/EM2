@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace EM3.Model
 {
-    public enum TypeValue
+    class ErrorProvider
     {
-        Integer,
-        Double
     }
 }

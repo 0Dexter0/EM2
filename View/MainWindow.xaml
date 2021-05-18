@@ -58,7 +58,8 @@
                 </MenuItem>
                 <MenuItem Name="MiDebugging" Header="Debugging"
                           Style="{StaticResource MenuItemStyle}">
-                    <MenuItem Name="MiStart" Header="Start"
+                    <MenuItem Name="MiStart" Header="Start" 
+                              Command="{Binding RunCommand}"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                     <MenuItem Name="MiDebug" Header="Debug"
                               Style="{StaticResource ImplMenuItemStyle}"/>
@@ -96,7 +97,7 @@
                                  Foreground="White" Grid.Column="1"
                                  MouseEnter="TBInput_MouseEnter"
                                  KeyUp="TBInput_KeyUp"
-                                 Text="{Binding FileContent}"/>
+                                 Text="{Binding FileContent, Mode=Default}"/>
                     </Grid>
                 </ScrollViewer>
             </Grid>
@@ -109,6 +110,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+
+            <TextBlock Text="{Binding Out}" 
+                       Foreground="White"/>
             <TextBlock Grid.Column="1" Name="TbInfo"
                        VerticalAlignment="Top" HorizontalAlignment="Center"
                        FontSize="25" Foreground="White"/>

@@ -9,7 +9,7 @@ using EM3.Annotations;
 
 namespace EM3.Model
 {
-    class Register : INotifyPropertyChanged
+    public class Register : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -20,28 +20,18 @@ namespace EM3.Model
         }
 
         private static int _count = 0;
-        private int? _intValue;
-        private double? _doubleValue;
+        private double? _value;
         private string _name;
 
         public TypeValue Type { get; set; }
         public int Num { get; }
-        public int? IntValue
-        {
-            get => _intValue;
-            set
-            {
-                _intValue = value;
-                OnPropertyChanged();
-            }
-        }
 
-        public double? DoubleValue
+        public double? Value
         {
-            get => _doubleValue;
+            get => _value;
             set
             {
-                _doubleValue = value;
+                _value = value;
                 OnPropertyChanged();
             }
         }
@@ -56,32 +46,22 @@ namespace EM3.Model
             }
         }
 
-        public Register(int value, string name = "")
-        {
-            Type = TypeValue.Integer;
-            IntValue = value;
-            Name = name;
-            Num = ++_count;
-        }
-
-        public Register(double value, string name = "")
+        public Register(double value, int num = -1 , string name = "")
         {
             Type = TypeValue.Double;
-            DoubleValue = value;
+            Value = value;
             Name = name;
-            Num = ++_count;
+            
+            if (num == -1)
+                Num = ++_count;
+            else
+                Num = num;
         }
 
         public override string ToString()
         {
-            if (IntValue == null)
-            {
-                return $"{Num}) {Name} {DoubleValue}";
-            }
-            else
-            {
-                return $"{Num}) {Name} {IntValue}";
-            }
+            return $"{Num}) {Name} {Value}";
+
         }
     }
 }
