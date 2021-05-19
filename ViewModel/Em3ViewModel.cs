@@ -4,26 +4,45 @@ using EM3.Annotations;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using EM3.Model;
 
 namespace EM3.ViewModel
 {
     public class Em3ViewModel : INotifyPropertyChanged
     {
-        private string _out = string.Empty;
+        private static string _out = string.Empty;
+        private static string _errors = string.Empty;
+        private static string _fileContent;
 
         private delegate double Sum(double var1, double var2);
         private delegate double Subtr(double var1, double var2);
         private delegate string Output(double value);
 
-        public string FileContent { get; set; }
-
+        public string FileContent
+        {
+            get => _fileContent;
+            set
+            {
+                _fileContent = value;
+                OnPropertyChanged();
+            }
+        }
         public string Out
         {
             get => _out;
             set
             {
                 _out = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Errors
+        {
+            get => _errors;
+            set
+            {
+                _errors = value;
                 OnPropertyChanged();
             }
         }

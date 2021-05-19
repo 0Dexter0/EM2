@@ -241,6 +241,11 @@ namespace EM3.View
         {
             Reload();
         }
-        
+
+        private void MiStart_OnClick(object sender, RoutedEventArgs e)
+        {
+            RunWindow run = new();
+            run.Show();
+        }
     }
 }
