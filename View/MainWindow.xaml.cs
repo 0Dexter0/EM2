@@ -34,21 +34,6 @@ namespace EM3.View
             DataContext = new Em3ViewModel();
         }
 
-        private void MI_MouseLeave(object sender, MouseEventArgs e)
-        {
-            SolidColorBrush solidColor = new() {Color = new Color() {R = 20, G = 20, B = 20}};
-            MiWindows.Background = solidColor;
-            MiRegisters.Background = solidColor;
-        }
-
-        private void MI_MouseEnter(object sender, MouseEventArgs e)
-        {
-            SolidColorBrush solidColor = new() {Color = new Color() {R = 20, G = 20, B = 20}};
-            MiWindows.Background = solidColor;
-            MiRegisters.Background = solidColor;
-            MiRegisters.Foreground = Brushes.Black;
-        }
-
         private void TBInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.S)
@@ -227,9 +212,10 @@ namespace EM3.View
                     SpIndex.Children.Add(new TextBlock()
                     {
                         Text = (++EnterPressed).ToString(),
-                        Padding = new Thickness(8, 0, 0, 0),
+                        Padding = new Thickness(5, 0, 5, 0),
                         Foreground = Brushes.White,
-                        FontSize = 15
+                        FontSize = 15,
+                        HorizontalAlignment = HorizontalAlignment.Center
                     });
                 }
             }
@@ -242,10 +228,5 @@ namespace EM3.View
             Reload();
         }
 
-        private void MiStart_OnClick(object sender, RoutedEventArgs e)
-        {
-            RunWindow run = new();
-            run.Show();
-        }
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using EM3.Model;
 
 namespace EM3.ViewModel
@@ -37,6 +38,7 @@ namespace EM3.ViewModel
                 OnPropertyChanged();
             }
         }
+
         public string Errors
         {
             get => _errors;

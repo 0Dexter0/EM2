@@ -46,6 +46,8 @@ namespace EM3.Model
             }
         }
 
+        public string Info => ToString();
+
         public Register(double value, int num = -1 , string name = "")
         {
             Type = TypeValue.Double;
@@ -60,7 +62,7 @@ namespace EM3.Model
 
         public override string ToString()
         {
-            return $"{Num}) {Name} {Value}";
+            return $"{Num} {Value}";
 
         }
     }

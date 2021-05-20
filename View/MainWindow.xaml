@@ -7,7 +7,7 @@
         xmlns:viewModel="clr-namespace:EM3.ViewModel"
         mc:Ignorable="d"
         Background="#27282a"
-        Title="EM2" Height="450" Width="800">
+        Title="EM2" Height="500" Width="800">
 
     <Window.DataContext>
         <viewModel:Em3ViewModel/>
@@ -34,9 +34,9 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -51,15 +51,9 @@
                     <MenuItem Name="MiExit" Header="Exit" Click="MIExit_OnClick"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                 </MenuItem>
-                <MenuItem Name="MiWindows" Header="Windows"
-                          Style="{StaticResource MenuItemStyle}">
-                    <MenuItem Name="MiRegisters" Header="Registers"
-                              Style="{StaticResource ImplMenuItemStyle}"/>
-                </MenuItem>
                 <MenuItem Name="MiDebugging" Header="Debugging"
                           Style="{StaticResource MenuItemStyle}">
                     <MenuItem Name="MiStart" Header="Start" 
-                              Click="MiStart_OnClick"
                               Command="{Binding RunCommand}"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                     <MenuItem Name="MiDebug" Header="Debug"
@@ -73,13 +67,13 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="700*"/>
+                <ColumnDefinition Width="100*"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
 
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" Margin="5">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -88,12 +82,13 @@
 
                         <StackPanel Name="SpIndex" Grid.Column="0">
                             <TextBlock Text="1" FontSize="15"
-                                       Padding="8,5,0,0" Foreground="White"/>
+                                       Padding="5,0,5,0" Foreground="White"
+                                       HorizontalAlignment="Center"/>
                         </StackPanel>
 
                         <TextBox Name="TbInput" TextWrapping="Wrap"
                                  AcceptsReturn="True" KeyDown="TBInput_KeyDown"
-                                 BorderBrush="Black" Margin="5"
+                                 BorderBrush="Black" Margin="5,0,0,0"
                                  Background="#141414" FontSize="15"
                                  Foreground="White" Grid.Column="1"
                                  MouseEnter="TBInput_MouseEnter"
@@ -102,25 +97,74 @@
                     </Grid>
                 </ScrollViewer>
             </Grid>
+
+            <Grid Grid.Column="1" Background="#141414" Margin="0, 5, 5, 5">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Content="Registers" Foreground="White"
+                       FontSize="15"/>
+                <ListBox Grid.Row="1" Background="Transparent" BorderBrush="Black"
+                         ItemsSource="{Binding Registers}"
+                         Focusable="False"
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="White" Background="Transparent"
+                                       Text="{Binding Info}"
+                                       FontSize="15"/>
+                        </DataTemplate>
+                        
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Label Grid.Row="2" Content="Result" Foreground="White"
+                       FontSize="15"/>
+                <TextBlock Grid.Row="3" Foreground="White"
+                           FontSize="19" Padding="5, 0"
+                           Text="{Binding Out}"
+                           />
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <TextBlock Text="{Binding Out}" 
-                       Foreground="White"/>
-            <TextBlock Grid.Column="1" Name="TbInfo"
-                       VerticalAlignment="Top" HorizontalAlignment="Center"
-                       FontSize="25" Foreground="White"/>
-            <TextBlock Grid.Column="2" Name="TbFileName"
-                       VerticalAlignment="Top" HorizontalAlignment="Center"
-                       Foreground="White" FontSize="25"
-                       Margin="0, 0, 30, 0"/>
+                <Label Grid.Row="0" Content="Errors" Foreground="White"
+                       FontSize="15"
+                       Margin="5,0"/>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden"
+                              BorderBrush="Black">
+                    <TextBlock Text="{Binding Errors}"
+                               Foreground="White" FontSize="15"
+                               Margin="5, 0, 0, 5"/>
+                </ScrollViewer>
+            </Grid>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock Name="TbFileName"
+                           VerticalAlignment="Top" HorizontalAlignment="Center"
+                           Foreground="White" FontSize="25"
+                           Margin="0, 0, 5, 0"/>
+                <TextBlock Name="TbInfo"
+                           VerticalAlignment="Top" HorizontalAlignment="Center"
+                           FontSize="25" Foreground="White"
+                           Margin="0, 0, 5, 0"/>
+                
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
