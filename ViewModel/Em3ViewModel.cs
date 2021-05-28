@@ -18,10 +18,6 @@ namespace EM3.ViewModel
         private bool _isBreak = false;
         private int _jmpCount = 0;
 
-        private delegate double Sum(double var1, double var2);
-        private delegate double Subtr(double var1, double var2);
-        private delegate string Output(double value);
-
         public string FileContent
         {
             get => _fileContent;
@@ -78,28 +74,30 @@ namespace EM3.ViewModel
 
             for (int i = 0; i < data.Count && !_isBreak; i++)
             {
-                //foreach (string[] line in data)
-
 
                 if (data[i][0] == OpertationEnum.Sum.ToString())
                 {
-                    Sum sum = Operations.Sum;
 
                     double sum1 = 0;
                     if (!double.TryParse(data[i][2], out sum1))
                     {
-                        int reg = int.Parse(data[i][2].Substring(0, data[i][2].Length - 1));
-                        sum1 = (double) Registers.First((r) => r.Num == reg).Value;
+                        int _reg = int.Parse(data[i][2].Substring(0, data[i][2].Length - 1));
+                        sum1 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     // sum1 = double.Parse(data[i][2]);
                     double sum2 = double.Parse(data[i][3]);
 
-                    double res = sum(sum1, sum2);
+                    double res = Operations.Sum(sum1, sum2);
 
                     int register = int.Parse(data[i][1]);
 
-                    Registers.Add(new(res, register));
+                    Register reg = Registers.FirstOrDefault((r) => r.Num == register);
+
+                    if (reg != null)
+                        reg.Value = res;
+                    else
+                        Registers.Add(new(res, register));
                 }
                 else if (data[i][0] == OpertationEnum.Div.ToString())
                 {
@@ -137,26 +135,40 @@ namespace EM3.ViewModel
                     int line = int.Parse(data[i][1]);
                     int to = int.Parse(data[i][2]);
 
-                    if (_jmpCount < to)
+                    if (_jmpCount < to - 1)
                     {
                         i = line - 2;
                         _jmpCount++;
                     }
                 }
-                else if (data[i][0] == OpertationEnum.Out.ToString())
+                else if (data[i][0].Trim() == OpertationEnum.Out.ToString())
                 {
                     int numRegister = int.Parse(data[i][1]);
-                    Output output = Operations.Out;
 
                     var value = Registers.First((r => numRegister == r.Num)).Value;
                     if (value != null)
-                        Out = output(value.Value);
+                        Out = Operations.Out(value.Value);
                 }
+                else if (data[i][0] == "End") _isBreak = true;
+
+
+
+
+                if (_isBreak) break;
+                
             }
+        }
+
+        private void Reset()
+        {
+            Registers.Clear();
+            _jmpCount = 0;
+            _isBreak = false;
         }
 
         public Em3Command RunCommand => new(o =>
         {
+            Reset();
             Run();
         });
     }

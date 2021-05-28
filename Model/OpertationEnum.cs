@@ -13,6 +13,7 @@ namespace EM3.Model
         Mult,
         Out,
         CrtVarD,
-        Jmp
+        Jmp,
+        End
     }
 }

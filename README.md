@@ -50,7 +50,7 @@ Myltiply variables
 
 Unconditional jump
 
-[Jmp] [??]
+[Jmp] [Code line:int | Iterations:int]
 
 Conditional jump
 
