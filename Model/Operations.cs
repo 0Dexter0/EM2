@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Windows.Data;
-
 namespace EM3.Model
 {
     static class Operations
     {
         public static double Sum(double var1, double var2)
         {
-            return var1 + var2;
+            return Math.Round(var1 + var2, 5);
         }
 
         public static double Subtr(double var1, double var2)
         {
-            return var1 - var2;
+            return Math.Round(var1 - var2, 5);
         }
 
         public static double Div(double var1, double var2)
@@ -22,7 +20,7 @@ namespace EM3.Model
 
         public static double Mult(double var1, double var2)
         {
-            return var1 * var2;
+            return Math.Round(var1 * var2, 5);
         }
 
         public static Register CrtVarI(int value, int regNum, string name = "")

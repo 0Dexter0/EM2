@@ -9,6 +9,7 @@ namespace EM3.Model
     enum OpertationEnum
     {
         Sum,
+        Subtr,
         Div,
         Mult,
         Out,
