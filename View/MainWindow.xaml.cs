@@ -46,10 +46,21 @@ namespace EM3.View
 
                 TbInput.IsEnabled = true;
             }
+
             if (e.Key == Key.Return)
             {
                 EnterPressed++;
                 TbInfo.Text = EnterPressed.ToString();
+            }
+
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.O)
+            {
+                MIOpen_OnClick(null, null);
+            }
+
+            if (e.Key == Key.F5)
+            {
+                MiStart.Command.Execute(null);
             }
         }
 
@@ -110,7 +121,7 @@ namespace EM3.View
             var fileContent = string.Empty;
 
             OpenFileDialog openFileDialog = new();
-            openFileDialog.Filter = "Txt files (*.txt)|*.txt|EM2 files (*.em2)|*.em2";
+            openFileDialog.Filter = "Txt files (*.txt)|*.txt|EM3 files (*.em3)|*.em3";
             openFileDialog.FilterIndex = 2;
             openFileDialog.RestoreDirectory = true;
             
@@ -134,6 +145,9 @@ namespace EM3.View
 
         private string GetFileName()
         {
+            if (FilePath == null)
+                return "";
+
             var str = FilePath.Split("\\");
 
             return str[^1];
@@ -228,5 +242,6 @@ namespace EM3.View
             Reload();
         }
 
+        
     }
 }

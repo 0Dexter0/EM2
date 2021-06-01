@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:EM3"
         xmlns:viewModel="clr-namespace:EM3.ViewModel"
         mc:Ignorable="d"
+        WindowState="Maximized"
         Background="#27282a"
-        Title="EM2" Height="500" Width="800">
+        Title="EM3" Height="500" Width="800"
+        KeyDown="TBInput_KeyDown">
 
     <Window.DataContext>
         <viewModel:Em3ViewModel/>
@@ -87,7 +89,7 @@
                         </StackPanel>
 
                         <TextBox Name="TbInput" TextWrapping="Wrap"
-                                 AcceptsReturn="True" KeyDown="TBInput_KeyDown"
+                                 AcceptsReturn="True"
                                  BorderBrush="Black" Margin="5,0,0,0"
                                  Background="#141414" FontSize="15"
                                  Foreground="White" Grid.Column="1"
