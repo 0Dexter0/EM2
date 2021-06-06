@@ -32,6 +32,22 @@
             <Setter Property="Control.VerticalAlignment" Value="Center"/>
             <Setter Property="Control.FontSize" Value="15"/>
         </Style>
+        <Style x:Key="LabelRegStyle">
+            <Setter Property="Control.Foreground" Value="White"/>
+            <Setter Property="Control.FontSize" Value="15"/>
+            <Setter Property="Control.VerticalAlignment" Value="Center"/>
+            <Setter Property="Control.HorizontalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="TbInputStyle">
+            <Setter Property="Control.BorderBrush" Value="Black"/>
+            <Setter Property="Control.Background" Value="#141414"/>
+            <Setter Property="Control.Foreground" Value="White"/>
+            <Setter Property="Control.FontSize" Value="15"/>
+            <Setter Property="TextBox.AcceptsReturn" Value="True"/>
+            <Setter Property="TextBox.TextWrapping" Value="Wrap"/>
+            <Setter Property="TextBox.MaxLines" Value="999"/>
+            <Setter Property="Control.Padding" Value="5, 0"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -74,11 +90,63 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <ScrollViewer VerticalScrollBarVisibility="Hidden" Margin="5">
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" BorderThickness="1"
+                                BorderBrush="Black">
+                            <Label Grid.Column="0" Style="{StaticResource LabelRegStyle}"
+                                   Content="Commands"/>
+                        </Border>
+                        <Border Grid.Column="1" BorderThickness="0, 1"
+                                BorderBrush="Black">
+                            <Label Grid.Column="1" Style="{StaticResource LabelRegStyle}"
+                                   Content="Reg out"/>
+                        </Border>
+                        <Border Grid.Column="2" BorderThickness="1, 1, 0, 1"
+                                BorderBrush="Black">
+                            <Label Grid.Column="2" Style="{StaticResource LabelRegStyle}"
+                                   Content="Reg A / Val"/>
+                        </Border>
+                        <Border Grid.Column="3" BorderThickness="1, 1, 0, 1"
+                                BorderBrush="Black">
+                            <Label Grid.Column="3" Style="{StaticResource LabelRegStyle}"
+                                   Content="Reg B / Val"/>
+                        </Border>
+                        <Border Grid.Column="4" BorderThickness="1"
+                                BorderBrush="Black" Margin="0, 0, 5, 0">
+                            <Label Grid.Column="4" Style="{StaticResource LabelRegStyle}"
+                                   Content="Other"/>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" 
+                              Margin="5" Grid.Row="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="155"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -88,32 +156,46 @@
                                        HorizontalAlignment="Center"/>
                         </StackPanel>
 
-                        <TextBox Name="TbInput" TextWrapping="Wrap"
-                                 AcceptsReturn="True"
-                                 BorderBrush="Black" Margin="5,0,0,0"
-                                 Background="#141414" FontSize="15"
-                                 Foreground="White" Grid.Column="1"
-                                 MouseEnter="TBInput_MouseEnter"
+                        <TextBox Name="TbCommands" Margin="5,0,0,0"
+                                 Grid.Column="1" KeyUp="TBInput_KeyUp"
+                                 MaxLines="999"
+                                 Text="{Binding FileContent, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TbInputStyle}"
+                                 PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
+                        <TextBox Name="TbOut" Grid.Column="2"
+                                 Style="{StaticResource TbInputStyle}"
                                  KeyUp="TBInput_KeyUp"
-                                 Text="{Binding FileContent, UpdateSourceTrigger=PropertyChanged}"/>
+                                 PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
+                        <TextBox Name="TbRegA" Grid.Column="3"
+                                 Style="{StaticResource TbInputStyle}"
+                                 KeyUp="TBInput_KeyUp"
+                                 PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
+                        <TextBox Name="TbRegB" Grid.Column="4"
+                                 Style="{StaticResource TbInputStyle}"
+                                 KeyUp="TBInput_KeyUp"
+                                 PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
+                        <TextBox Name="TbOther" Grid.Column="5"
+                                 Style="{StaticResource TbInputStyle}"
+                                 KeyUp="TBInput_KeyUp"
+                                 PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
                     </Grid>
                 </ScrollViewer>
             </Grid>
 
-            <Grid Grid.Column="1" Background="#141414" Margin="0, 5, 5, 5">
+            <Grid Grid.Column="1" Background="#141414" Margin="0, 0, 5, 5">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="Registers" Foreground="White"
-                       FontSize="15"/>
+                <Label Grid.Row="0" Content="Registers" 
+                       Style="{StaticResource LabelRegStyle}"/>
                 <ListBox Grid.Row="1" Background="Transparent" BorderBrush="Black"
                          ItemsSource="{Binding Registers}"
-                         Focusable="False"
+                         Focusable="False" Margin="0, 5, 0, 0"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

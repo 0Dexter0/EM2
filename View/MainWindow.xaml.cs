@@ -38,13 +38,21 @@ namespace EM3.View
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.S)
             {
-                TbInput.IsEnabled = false;
+                TbCommands.IsEnabled = false;
+                TbOut.IsEnabled = false;
+                TbRegA.IsEnabled = false;
+                TbRegB.IsEnabled = false;
+                TbOther.IsEnabled = false;
 
                 SaveFile();
 
                 ShowSave();
 
-                TbInput.IsEnabled = true;
+                TbCommands.IsEnabled = true;
+                TbOut.IsEnabled = true;
+                TbRegA.IsEnabled = true;
+                TbRegB.IsEnabled = true;
+                TbOther.IsEnabled = true;
             }
 
             if (e.Key == Key.Return)
@@ -69,11 +77,6 @@ namespace EM3.View
             Dispatcher.Invoke(() => TbInfo.Text = "");
         }
 
-        private void TBInput_MouseEnter(object sender, MouseEventArgs e)
-        {
-            TbInput.BorderBrush = Brushes.Black;
-        }
-
         private void TBInput_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -83,14 +86,18 @@ namespace EM3.View
                 SpIndex.Children.Add(new TextBlock()
                 {
                     Text = EnterPressed.ToString(),
-                    Padding = new Thickness(8, 0, 0, 0),
                     Foreground = Brushes.White,
-                    FontSize = 15
+                    FontSize = 15,
+                    HorizontalAlignment = HorizontalAlignment.Center
                 });
+
+                AddLines();
+                TbCommands.Focus();
+                TbCommands.CaretIndex = TbCommands.Text.Length;
             }
             else if (e.Key == Key.Back)
             {
-                int numLines = GetNumLines(TbInput.Text);
+                int numLines = GetNumLines(TbCommands.Text);
 
                 if (numLines < EnterPressed && EnterPressed > 1)
                 {
@@ -137,7 +144,7 @@ namespace EM3.View
                 }
             }
 
-            TbInput.Text = fileContent;
+            //TbInput.Text = fileContent;
             TbFileName.Text = GetFileName();
             
             Reload();
@@ -178,7 +185,7 @@ namespace EM3.View
 
                     using (StreamWriter writer = new(myStream))
                     {
-                        writer.WriteLine(TbInput.Text);
+                        //writer.WriteLine(TbInput.Text);
                     }
 
                     myStream.Close();
@@ -192,7 +199,7 @@ namespace EM3.View
 
                 using (StreamWriter writer = new(myStream))
                 {
-                    writer.WriteLine(TbInput.Text);
+                    //writer.WriteLine(TbInput.Text);
                 }
 
                 myStream.Close();
@@ -210,7 +217,7 @@ namespace EM3.View
 
         private void Reload()
         {
-            int numLines = GetNumLines(TbInput.Text);
+            int numLines = GetNumLines(TbCommands.Text);
 
             if (numLines < EnterPressed)
             {
@@ -226,7 +233,6 @@ namespace EM3.View
                     SpIndex.Children.Add(new TextBlock()
                     {
                         Text = (++EnterPressed).ToString(),
-                        Padding = new Thickness(5, 0, 5, 0),
                         Foreground = Brushes.White,
                         FontSize = 15,
                         HorizontalAlignment = HorizontalAlignment.Center
@@ -242,6 +248,61 @@ namespace EM3.View
             Reload();
         }
 
-        
+
+        private void TbInput_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                SwitchFocus();
+                e.Handled = true;
+            }
+        }
+
+
+
+
+
+
+
+
+        private void SwitchFocus()
+        {
+            if (TbCommands.IsFocused)
+            {
+                TbOut.Focus();
+                TbOut.CaretIndex = TbOut.Text.Length;
+            }
+            else if (TbOut.IsFocused)
+            {
+                TbRegA.Focus();
+                TbRegA.CaretIndex = TbRegA.Text.Length;
+            }
+            else if (TbRegA.IsFocused)
+            {
+                TbRegB.Focus();
+                TbRegB.CaretIndex = TbRegB.Text.Length;
+            }
+            else if (TbRegB.IsFocused)
+            {
+                TbOther.Focus();
+                TbOther.CaretIndex = TbOther.Text.Length;
+            }
+            else
+            {
+                AddLines();
+                TbCommands.Focus();
+                TbCommands.CaretIndex = TbCommands.Text.Length;
+                Reload();
+            }
+        }
+
+        private void AddLines()
+        {
+            TbCommands.Text += "\n";
+            TbOut.Text += "\n";
+            TbRegA.Text += "\n";
+            TbRegB.Text += "\n";
+            TbOther.Text += "\n";
+        }
     }
 }

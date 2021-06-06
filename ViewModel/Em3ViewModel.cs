@@ -89,7 +89,7 @@ namespace EM3.ViewModel
                     double var2 = 0; //double.Parse(data[i][3]);
                     if (!double.TryParse(data[i][3], out var2))
                     {
-                        int _reg = int.Parse(data[i][3].Substring(0, data[i][3].Length - 2));
+                        int _reg = int.Parse(data[i][3].Substring( 0, data[i][3].Length - 2));
                         var2 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
