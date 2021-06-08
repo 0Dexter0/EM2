@@ -62,7 +62,8 @@
                 <MenuItem Name="MiFile" Header="File"
                           Style="{StaticResource MenuItemStyle}">
                     <MenuItem Name="MiOpen" Header="Open" Click="MIOpen_OnClick"
-                              Style="{StaticResource ImplMenuItemStyle}"/>
+                              Style="{StaticResource ImplMenuItemStyle}"
+                              Command="{Binding ParseCommand}"/>
                     <MenuItem Name="MiSave" Header="Save" Click="MISave_OnClick"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                     <Separator BorderBrush="Black"/>
@@ -159,24 +160,28 @@
                         <TextBox Name="TbCommands" Margin="5,0,0,0"
                                  Grid.Column="1" KeyUp="TBInput_KeyUp"
                                  MaxLines="999"
-                                 Text="{Binding FileContent, UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding Commands, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{StaticResource TbInputStyle}"
                                  PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
                         <TextBox Name="TbOut" Grid.Column="2"
                                  Style="{StaticResource TbInputStyle}"
                                  KeyUp="TBInput_KeyUp"
+                                 Text="{Binding OutReg, UpdateSourceTrigger=PropertyChanged}"
                                  PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
                         <TextBox Name="TbRegA" Grid.Column="3"
                                  Style="{StaticResource TbInputStyle}"
                                  KeyUp="TBInput_KeyUp"
+                                 Text="{Binding RegA, UpdateSourceTrigger=PropertyChanged}"
                                  PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
                         <TextBox Name="TbRegB" Grid.Column="4"
                                  Style="{StaticResource TbInputStyle}"
                                  KeyUp="TBInput_KeyUp"
+                                 Text="{Binding RegB, UpdateSourceTrigger=PropertyChanged}"
                                  PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
                         <TextBox Name="TbOther" Grid.Column="5"
                                  Style="{StaticResource TbInputStyle}"
                                  KeyUp="TBInput_KeyUp"
+                                 Text="{Binding Other, UpdateSourceTrigger=PropertyChanged}"
                                  PreviewKeyDown="TbInput_OnPreviewKeyDown"/>
                     </Grid>
                 </ScrollViewer>

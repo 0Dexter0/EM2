@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace EM3.Model
 {
     class Parser
     {
-        public List<string[]> ParseData(string data)
+        public string[] ParseData(string data)
         {
-            List<string[]> result = new();
-            string[] lines = data.Split('\n');
+            string[] lines = data.Split('#');
 
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 1; i < lines.Length; i++)
             {
-                result.Add(lines[i].Split(' '));
+                lines[i] = lines[i].Substring(2);
             }
 
-            return result;
+            return lines;
         }
     }
 }

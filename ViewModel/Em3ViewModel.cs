@@ -12,9 +12,16 @@ namespace EM3.ViewModel
 {
     public class Em3ViewModel : INotifyPropertyChanged
     {
+        #region Props
+
         private static string _out = string.Empty;
         private static string _errors = string.Empty;
         private static string _fileContent;
+        private static string _commands;
+        private static string _outReg;
+        private static string _regA;
+        private static string _regB;
+        private static string _other;
         private bool _isBreak = false;
         private int _jmpCount = 0;
 
@@ -24,6 +31,51 @@ namespace EM3.ViewModel
             set
             {
                 _fileContent = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Commands
+        {
+            get => _commands;
+            set
+            {
+                _commands = value;
+                OnPropertyChanged();
+            }
+        }
+        public string OutReg
+        {
+            get => _outReg;
+            set
+            {
+                _outReg = value;
+                OnPropertyChanged();
+            }
+        }
+        public string RegA
+        {
+            get => _regA;
+            set
+            {
+                _regA = value;
+                OnPropertyChanged();
+            }
+        }
+        public string RegB
+        {
+            get => _regB;
+            set
+            {
+                _regB = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Other
+        {
+            get => _other;
+            set
+            {
+                _other = value;
                 OnPropertyChanged();
             }
         }
@@ -51,6 +103,11 @@ namespace EM3.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private static Parser parser = new();
+
+        #endregion
+
+
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -62,17 +119,12 @@ namespace EM3.ViewModel
             Registers = new();
         }
 
-        private static Parser parser = new();
+        
 
         private void Run()
         {
-            var data = parser.ParseData(FileContent);
 
-            //Runner runner = new(data);
-
-            //var methods = runner.Methods;
-
-            for (int i = 0; i < data.Count && !_isBreak; i++)
+            /*for (int i = 0; i < data.Count && !_isBreak; i++)
             {
 
                 if (data[i][0] == OpertationEnum.Sum.ToString())
@@ -227,7 +279,7 @@ namespace EM3.ViewModel
 
                 if (_isBreak) break;
                 
-            }
+            }*/
         }
 
         private void Reset()
@@ -241,6 +293,16 @@ namespace EM3.ViewModel
         {
             Reset();
             Run();
+        });
+
+        public Em3Command ParseCommand => new(o =>
+        {
+            var data = parser.ParseData(FileContent);
+            Commands = data[0];
+            OutReg = data[1];
+            RegA = data[2];
+            RegB = data[3];
+            Other = data[4];
         });
     }
 }

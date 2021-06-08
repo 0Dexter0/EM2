@@ -126,6 +126,7 @@ namespace EM3.View
         private void MIOpen_OnClick(object sender, RoutedEventArgs e)
         {
             var fileContent = string.Empty;
+            
 
             OpenFileDialog openFileDialog = new();
             openFileDialog.Filter = "Txt files (*.txt)|*.txt|EM3 files (*.em3)|*.em3";
@@ -140,7 +141,8 @@ namespace EM3.View
 
                 using (StreamReader reader = new StreamReader(fileStream))
                 {
-                    fileContent = reader.ReadToEnd();
+                    //fileContent = reader.ReadToEnd();
+                    (DataContext as Em3ViewModel)!.FileContent = reader.ReadToEnd();
                 }
             }
 
@@ -148,6 +150,7 @@ namespace EM3.View
             TbFileName.Text = GetFileName();
             
             Reload();
+            MiOpen.Command.Execute(null);
         }
 
         private string GetFileName()
@@ -172,7 +175,7 @@ namespace EM3.View
             Stream myStream;
             SaveFileDialog saveFile = new();
 
-            saveFile.Filter = "Txt files (*.txt)|*.txt|EM2 files (*.em2)|*.em2";
+            saveFile.Filter = "Txt files (*.txt)|*.txt|EM2 files (*.em3)|*.em3";
             saveFile.FilterIndex = 2;
             saveFile.RestoreDirectory = true;
             saveFile.OverwritePrompt = false;
@@ -185,7 +188,15 @@ namespace EM3.View
 
                     using (StreamWriter writer = new(myStream))
                     {
-                        //writer.WriteLine(TbInput.Text);
+                        writer.WriteLine(TbCommands.Text);
+                        writer.WriteLine("#");
+                        writer.WriteLine(TbOut.Text);
+                        writer.WriteLine("#");
+                        writer.WriteLine(TbRegA.Text);
+                        writer.WriteLine("#");
+                        writer.WriteLine(TbRegB.Text);
+                        writer.WriteLine("#");
+                        writer.WriteLine(TbOther.Text);
                     }
 
                     myStream.Close();
@@ -199,7 +210,15 @@ namespace EM3.View
 
                 using (StreamWriter writer = new(myStream))
                 {
-                    //writer.WriteLine(TbInput.Text);
+                    writer.WriteLine(TbCommands.Text);
+                    writer.WriteLine("#");
+                    writer.WriteLine(TbOut.Text);
+                    writer.WriteLine("#");
+                    writer.WriteLine(TbRegA.Text);
+                    writer.WriteLine("#");
+                    writer.WriteLine(TbRegB.Text);
+                    writer.WriteLine("#");
+                    writer.WriteLine(TbOther.Text);
                 }
 
                 myStream.Close();
