@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace EM3.Model
@@ -15,6 +16,19 @@ namespace EM3.Model
             }
 
             return lines;
+        }
+
+        public string[] SplitAndFormat(string data)
+        {
+            data = data.Replace('\r', ' ');
+            var arr = data.Split('\n');
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                arr[i] = arr[i].Trim();
+            }
+
+            return arr;
         }
     }
 }
