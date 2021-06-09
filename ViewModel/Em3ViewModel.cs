@@ -104,6 +104,7 @@ namespace EM3.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         private static Parser parser = new();
+        private Compiler _compiler;
 
         #endregion
 
@@ -117,6 +118,7 @@ namespace EM3.ViewModel
         public Em3ViewModel()
         {
             Registers = new();
+            _compiler = new();
         }
 
         
@@ -125,8 +127,17 @@ namespace EM3.ViewModel
         {
             var com = parser.SplitAndFormat(Commands);
             var outReg = parser.SplitAndFormat(OutReg);
-            var regA = parser.SplitAndFormat(RegA);
-            var regB = parser.SplitAndFormat(RegB);
+            var regA = parser.SplitAndFormat(RegA.Trim());
+            var regB = parser.SplitAndFormat(RegB.Trim());
+
+            bool result = _compiler.Compile(com, outReg, regA, regB);
+
+            if (!result)
+            {
+                Errors = string.Join('\n', _compiler.ErrorProvider.GetErrors());
+
+                return;
+            }
 
             for (int i = 0; i < com.Length && !_isBreak; i++)
             {
@@ -145,8 +156,8 @@ namespace EM3.ViewModel
                     double var2 = 0; //double.Parse(data[i][3]);
                     if (!double.TryParse(regB[i], out var2))
                     {
-                        int _reg = int.Parse(regB[i].Substring( 0, regB[i].Length - 1));
-                        var2 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        int _reg = int.Parse(regB[i].Substring(0, regB[i].Length - 1));
+                        var2 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     double res = Operations.Sum(var1, var2);
@@ -166,7 +177,7 @@ namespace EM3.ViewModel
                     if (!double.TryParse(regA[i], out var1))
                     {
                         int _reg = int.Parse(regA[i].Substring(0, regA[i].Length - 1));
-                        var1 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        var1 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     // sum1 = double.Parse(data[i][2]);
@@ -174,7 +185,7 @@ namespace EM3.ViewModel
                     if (!double.TryParse(regB[i], out var2))
                     {
                         int _reg = int.Parse(regB[i].Substring(0, regB[i].Length - 1));
-                        var2 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        var2 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     double res = Operations.Subtr(var1, var2);
@@ -194,7 +205,7 @@ namespace EM3.ViewModel
                     if (!double.TryParse(regA[i], out var1))
                     {
                         int _reg = int.Parse(regA[i].Substring(0, regA[i].Length - 1));
-                        var1 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        var1 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     // sum1 = double.Parse(data[i][2]);
@@ -202,7 +213,7 @@ namespace EM3.ViewModel
                     if (!double.TryParse(regB[i], out var2))
                     {
                         int _reg = int.Parse(regB[i].Substring(0, regB[i].Length - 1));
-                        var2 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        var2 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     double res = Operations.Div(var1, var2);
@@ -222,7 +233,7 @@ namespace EM3.ViewModel
                     if (!double.TryParse(regA[i], out var1))
                     {
                         int _reg = int.Parse(regA[i].Substring(0, regA[i].Length - 1));
-                        var1 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        var1 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     // sum1 = double.Parse(data[i][2]);
@@ -230,7 +241,7 @@ namespace EM3.ViewModel
                     if (!double.TryParse(regB[i], out var2))
                     {
                         int _reg = int.Parse(regB[i].Substring(0, regB[i].Length - 1));
-                        var2 = (double)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        var2 = (double) Registers.FirstOrDefault((r) => r.Num == _reg).Value;
                     }
 
                     double res = Operations.Mult(var1, var2);
@@ -275,12 +286,12 @@ namespace EM3.ViewModel
                     if (value != null)
                         Out = Operations.Out(value.Value);
                 }
-                else if (com[i] == OpertationEnum.End.ToString()) 
+                else if (com[i] == OpertationEnum.End.ToString())
+                {
                     _isBreak = true;
-
+                }
 
                 if (_isBreak) break;
-                
             }
         }
 
@@ -289,11 +300,14 @@ namespace EM3.ViewModel
             Registers.Clear();
             _jmpCount = 0;
             _isBreak = false;
+            Errors = string.Empty;
+            OnPropertyChanged("Errors");
         }
 
         public Em3Command RunCommand => new(o =>
         {
             Reset();
+            
             Run();
         });
 

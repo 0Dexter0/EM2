@@ -149,8 +149,8 @@ namespace EM3.View
             //TbInput.Text = fileContent;
             TbFileName.Text = GetFileName();
             
-            Reload();
             MiOpen.Command.Execute(null);
+            Reload();
         }
 
         private string GetFileName()
