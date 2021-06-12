@@ -15,6 +15,9 @@ namespace EM3.Model
         Out,
         CrtVarD,
         Jmp,
+        IfJmp,
+        InitArr,
+        NextElem,
         End
     }
 }

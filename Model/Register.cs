@@ -20,13 +20,13 @@ namespace EM3.Model
         }
 
         private static int _count = 0;
-        private double? _value;
+        private double _value;
         private string _name;
 
         public TypeValue Type { get; set; }
         public int Num { get; }
 
-        public double? Value
+        public double Value
         {
             get => _value;
             set
