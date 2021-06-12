@@ -48,6 +48,7 @@
             <Setter Property="TextBox.MaxLines" Value="999"/>
             <Setter Property="Control.Padding" Value="5, 0"/>
         </Style>
+        
     </Window.Resources>
 
     <Grid>
@@ -72,12 +73,13 @@
                 </MenuItem>
                 <MenuItem Name="MiDebugging" Header="Debugging"
                           Style="{StaticResource MenuItemStyle}">
-                    <MenuItem Name="MiStart" Header="Start" 
+                    <MenuItem Name="MiStart" Header="Start"
                               Command="{Binding RunCommand}"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                     <MenuItem Name="MiDebug" Header="Debug"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                     <MenuItem Name="MiReload" Header="Reload" Click="MIReload_OnClick"
+                              Command="{Binding ReloadCommand}"
                               Style="{StaticResource ImplMenuItemStyle}"/>
                 </MenuItem>
             </Menu>
@@ -231,16 +233,33 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
                 <Label Grid.Row="0" Content="Errors" Foreground="White"
                        FontSize="15"
                        Margin="5,0"/>
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden"
-                              BorderBrush="Black">
-                    <TextBlock Text="{Binding Errors}"
-                               Foreground="White" FontSize="15"
-                               Margin="5, 0, 0, 5"/>
-                </ScrollViewer>
+                <Border Grid.Row="1" Grid.Column="0" 
+                        BorderBrush="Black" 
+                        BorderThickness="1"
+                        Margin="10, 0, 0, 5"
+                        MinWidth="400">
+                    <ListBox Background="#27282a" BorderBrush="Transparent"
+                             Padding="5, 0" Focusable="False"
+                             ItemsSource="{Binding Errors}"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                             Name="LbErr">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Err}"
+                                           Foreground="White" Background="Transparent"
+                                           FontSize="15"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
             </Grid>
 
             <StackPanel Grid.Column="1">

@@ -5,6 +5,7 @@ namespace EM3.Model
 {
     class Compiler
     {
+        private string[] _commands;
         public ErrorProvider ErrorProvider { get; }
 
         public Compiler()
@@ -15,6 +16,7 @@ namespace EM3.Model
         public bool Compile(string[] commands, string[] regOut, 
                             string[] regA, string[] regB)
         {
+            _commands = commands;
             CheckCommands(commands);
             CheckRegOut(regOut);
             CheckRegOrVal(regA);
@@ -31,7 +33,11 @@ namespace EM3.Model
             {
                 foreach (string oprName in Enum.GetNames(typeof(OpertationEnum)))
                 {
-                    if (commands[i].Equals(oprName))
+                    if (commands[i].Equals(string.Empty))
+                    {
+                        continue;
+                    }
+                    else if (commands[i].Equals(oprName))
                     {
                         isOk = true;
                         break;
@@ -53,11 +59,19 @@ namespace EM3.Model
         {
             for (int i = 0; i < regOut.Length; i++)
             {
-                int tmp;
-
-                if (!int.TryParse(regOut[i], out tmp))
+                if (regOut[i].Equals(string.Empty))
                 {
-                    ErrorProvider.CreateError(i, regOut[i], ErrorType.RegOut);
+                    if (_commands[i].Equals(string.Empty) ||
+                        _commands[i].Equals(OpertationEnum.End.ToString())) continue;
+                }
+                else
+                {
+                    int tmp;
+
+                    if (!int.TryParse(regOut[i], out tmp))
+                    {
+                        ErrorProvider.CreateError(i, regOut[i], ErrorType.RegOut);
+                    }
                 }
             }
         }
@@ -66,13 +80,18 @@ namespace EM3.Model
         {
             for (int i = 0; i < reg.Length - 1; i++)
             {
-                double tmp;
-
-                if (!double.TryParse(reg[i], out tmp))
+                if (_commands[i].Equals(string.Empty) ||
+                    _commands[i].Equals(OpertationEnum.End.ToString())) continue;
+                else
                 {
-                    if (!double.TryParse(reg[i].Substring(0, reg[i].Length - 1), out tmp))
+                    double tmp;
+
+                    if (!double.TryParse(reg[i], out tmp))
                     {
-                        ErrorProvider.CreateError(i, reg[i], ErrorType.RegOrVal);
+                        if (!double.TryParse(reg[i].Substring(0, reg[i].Length - 1), out tmp))
+                        {
+                            ErrorProvider.CreateError(i, reg[i], ErrorType.RegOrVal);
+                        }
                     }
                 }
             }

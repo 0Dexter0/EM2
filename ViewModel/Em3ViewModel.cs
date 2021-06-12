@@ -89,17 +89,18 @@ namespace EM3.ViewModel
             }
         }
 
-        public string Errors
-        {
-            get => _errors;
-            set
-            {
-                _errors = value;
-                OnPropertyChanged();
-            }
-        }
+        //public string Errors
+        //{
+        //    get => _errors;
+        //    set
+        //    {
+        //        _errors = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+        public ObservableCollection<Error> Errors { get; private set; }
 
-        public ObservableCollection<Register> Registers { get; set; }
+        public ObservableCollection<Register> Registers { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -118,6 +119,7 @@ namespace EM3.ViewModel
         public Em3ViewModel()
         {
             Registers = new();
+            Errors = new();
             _compiler = new();
         }
 
@@ -130,18 +132,23 @@ namespace EM3.ViewModel
             var regA = parser.SplitAndFormat(RegA.Trim());
             var regB = parser.SplitAndFormat(RegB.Trim());
 
-            bool result = _compiler.Compile(com, outReg, regA, regB);
+            //TODO: Fix compiler and errors out
+            //bool result = _compiler.Compile(com, outReg, regA, regB);
 
-            if (!result)
-            {
-                Errors = string.Join('\n', _compiler.ErrorProvider.GetErrors());
+            //if (!result)
+            //{
+            //    var err = _compiler.ErrorProvider.GetErrors();
 
-                return;
-            }
+            //    foreach (Error e in err)
+            //    {
+            //        Errors.Add(e);
+            //    }
+
+            //    return;
+            //}
 
             for (int i = 0; i < com.Length && !_isBreak; i++)
             {
-
                 if (com[i] == OpertationEnum.Sum.ToString())
                 {
 
@@ -300,14 +307,11 @@ namespace EM3.ViewModel
             Registers.Clear();
             _jmpCount = 0;
             _isBreak = false;
-            Errors = string.Empty;
-            OnPropertyChanged("Errors");
+            Errors.Clear();
         }
 
         public Em3Command RunCommand => new(o =>
         {
-            Reset();
-            
             Run();
         });
 
@@ -319,6 +323,11 @@ namespace EM3.ViewModel
             RegA = data[2];
             RegB = data[3];
             Other = data[4];
+        });
+
+        public Em3Command ReloadCommand => new(o =>
+        {
+            Reset();
         });
     }
 }

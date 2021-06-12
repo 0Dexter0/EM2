@@ -125,9 +125,6 @@ namespace EM3.View
 
         private void MIOpen_OnClick(object sender, RoutedEventArgs e)
         {
-            var fileContent = string.Empty;
-            
-
             OpenFileDialog openFileDialog = new();
             openFileDialog.Filter = "Txt files (*.txt)|*.txt|EM3 files (*.em3)|*.em3";
             openFileDialog.FilterIndex = 2;
@@ -259,7 +256,16 @@ namespace EM3.View
                 }
             }
 
-            TbInfo.Text = "";
+            //LbErr.SelectionMode = SelectionMode.Multiple;
+            //LbErr.SelectAll();
+            //LbErr.SelectedItems.Clear();
+
+            //while (LbErr.Items.Count > 0)
+            //{
+            //    LbErr.Items.RemoveAt(LbErr.Items.Count - 1);
+            //}
+
+            TbInfo.Text = string.Empty;
         }
 
         private void MIReload_OnClick(object sender, RoutedEventArgs e)
@@ -323,5 +329,7 @@ namespace EM3.View
             TbRegB.Text += "\n";
             TbOther.Text += "\n";
         }
+
+        
     }
 }
