@@ -12,6 +12,7 @@ namespace EM3.Model
         Subtr,
         Div,
         Mult,
+        Mod,
         Out,
         CrtVarD,
         Jmp,

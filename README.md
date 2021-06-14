@@ -18,6 +18,16 @@ Sum of variables
 
 [Sum] [Result register:int | Register num:int | Register num:int]
 
+Mod
+
+[Mod] [Result register:int | Num1 | Num2]
+
+[Mod] [Result register:int | Register num:int | Num2]
+
+[Mod] [Result register:int | Num1 | Register num:int]
+
+[Mod] [Result register:int | Register num:int | Register num:int]
+
 Subtraction of variables
 
 [Subtr] [Result register:int | Num1 | Num2]

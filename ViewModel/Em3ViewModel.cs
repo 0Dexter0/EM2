@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using EM3.Annotations;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -24,8 +25,8 @@ namespace EM3.ViewModel
         private static string _other;
         private bool _isBreak = false;
         private int _jmpCount = 0;
-        private int _lastElement;
-        private int _index = 0;
+        private int _lastElement = 0;
+        private Register _current;
 
         public string FileContent
         {
@@ -127,6 +128,7 @@ namespace EM3.ViewModel
 
         
 
+        [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
         private void Run()
         {
             var com = parser.SplitAndFormat(Commands);
@@ -332,35 +334,35 @@ namespace EM3.ViewModel
                 }
                 else if (com[i] == OpertationEnum.NextElem.ToString())
                 {
-                    int var1 = 0;
-                    if (!int.TryParse(regA[i], out var1))
+                    int refReg = 0;
+                    if (!int.TryParse(regA[i], out refReg))
                     {
                         int _reg = int.Parse(regA[i].Substring(0, regA[i].Length - 1));
-                        var1 = (int)Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                        refReg = Registers.FirstOrDefault((r) => r.Num == _reg).Num;
                     }
 
                     int register = int.Parse(outReg[i]);
 
                     Register reg = Registers.FirstOrDefault((r) => r.Num == register);
-                    int numReg = (int) Registers.FirstOrDefault(r => r.Num == var1).Value;
+                    double valRefReg = Registers.FirstOrDefault(r => r.Num == refReg).Value;
+                    Register arrReg = Registers.FirstOrDefault(r => r.Num == (int) valRefReg);
+
+                    if (_current == null) _current = arrReg;
 
                     if (reg != null)
                     {
-                        if (_index == 0)
+                        if (_current.Num <= _lastElement)
                         {
-                            reg.Value = numReg;
+                            reg.Value = _current.Value;
+                            _current = Registers.FirstOrDefault(r => r.Num == _current.Num + 1);
                         }
                         else
-                        {
-                            if (numReg + 1 <= _lastElement)
-                                reg.Value = ++numReg;
-                            else
-                                reg.Value = -1;
-                        }
+                            reg.Value = -1;
                     }
                     else
                     { 
-                        Registers.Add(new(numReg, register));
+                        Registers.Add(new(_current.Value, register));
+                        _current = Registers.FirstOrDefault(r => r.Num == _current.Num + 1);
                     }
                 }
                 else if (com[i] == OpertationEnum.IfJmp.ToString())
@@ -388,6 +390,33 @@ namespace EM3.ViewModel
                         }
                     }
                 }
+                else if (com[i] == OpertationEnum.Mod.ToString())
+                {
+                    double var1 = 0;
+                    if (!double.TryParse(regA[i], out var1))
+                    {
+                        int _reg = int.Parse(regA[i].Substring(0, regA[i].Length - 1));
+                        var1 = Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                    }
+
+                    double var2 = 0;
+                    if (!double.TryParse(regB[i], out var2))
+                    {
+                        int _reg = int.Parse(regB[i].Substring(0, regB[i].Length - 1));
+                        var2 = Registers.FirstOrDefault((r) => r.Num == _reg).Value;
+                    }
+
+                    double res = Operations.Mod(var1, var2);
+
+                    int register = int.Parse(outReg[i]);
+
+                    Register reg = Registers.FirstOrDefault((r) => r.Num == register);
+
+                    if (reg != null)
+                        reg.Value = res;
+                    else
+                        Registers.Add(new(res, register));
+                }
 
                 if (_isBreak) break;
             }
@@ -397,9 +426,10 @@ namespace EM3.ViewModel
         {
             Registers.Clear();
             _jmpCount = 0;
-            _index = 0;
             _isBreak = false;
             Errors.Clear();
+            Out = null;
+            _current = null;
         }
 
         public Em3Command RunCommand => new(o =>
