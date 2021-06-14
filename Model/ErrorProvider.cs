@@ -40,5 +40,6 @@ namespace EM3.Model
         }
 
         public List<Error> GetErrors() => _errors;
+        public void ClearError() => _errors.Clear();
     }
 }

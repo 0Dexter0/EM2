@@ -6,6 +6,7 @@ namespace EM3.Model
     class Compiler
     {
         private string[] _commands;
+        private bool[] _isCommands;
         public ErrorProvider ErrorProvider { get; }
 
         public Compiler()
@@ -17,10 +18,11 @@ namespace EM3.Model
                             string[] regA, string[] regB)
         {
             _commands = commands;
+            _isCommands = new bool[commands.Length];
             CheckCommands(commands);
             CheckRegOut(regOut);
-            CheckRegOrVal(regA);
-            CheckRegOrVal(regB);
+            CheckRegAOrVal(regA);
+            CheckRegBOrVal(regB);
 
             return ErrorProvider.GetErrors().Count == 0;
         }
@@ -35,15 +37,18 @@ namespace EM3.Model
                 {
                     if (commands[i].Equals(string.Empty))
                     {
+                        _isCommands[i] = true;
                         continue;
                     }
                     else if (commands[i].Equals(oprName))
                     {
+                        _isCommands[i] = true;
                         isOk = true;
                         break;
                     }
                     else
                     {
+                        _isCommands[i] = false;
                         isOk = false;
                     }
                 }
@@ -59,42 +64,99 @@ namespace EM3.Model
         {
             for (int i = 0; i < regOut.Length; i++)
             {
-                if (regOut[i].Equals(string.Empty))
+                try
+                {
+                    if (regOut[i].Equals(string.Empty))
+                    {
+                        if (_commands[i].Equals(string.Empty) ||
+                            _commands[i].Equals(OpertationEnum.End.ToString())) continue;
+                    }
+                    else if (!_isCommands[i] && regOut[i].Equals(string.Empty)) continue;
+                    else
+                    {
+                        int tmp;
+
+                        if (!int.TryParse(regOut[i], out tmp))
+                        {
+                            ErrorProvider.CreateError(i, regOut[i], ErrorType.RegOut);
+                        }
+                    }
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    continue;
+                }
+
+                
+            }
+        }
+
+        private void CheckRegAOrVal(string[] regA)
+        {
+            for (int i = 0; i < regA.Length - 1; i++)
+            {
+                try
                 {
                     if (_commands[i].Equals(string.Empty) ||
-                        _commands[i].Equals(OpertationEnum.End.ToString())) continue;
-                }
-                else
-                {
-                    int tmp;
-
-                    if (!int.TryParse(regOut[i], out tmp))
+                        _commands[i].Equals(OpertationEnum.End.ToString()) ||
+                        _commands[i].Equals(OpertationEnum.Out.ToString())) continue;
+                    else if (!_isCommands[i] && regA[i].Equals(string.Empty)) continue;
+                    else
                     {
-                        ErrorProvider.CreateError(i, regOut[i], ErrorType.RegOut);
+                        double tmp;
+
+                        if (!double.TryParse(regA[i], out tmp))
+                        {
+                            if (!double.TryParse(regA[i].Substring(0, regA[i].Length - 1), out tmp))
+                            {
+                                ErrorProvider.CreateError(i, regA[i], ErrorType.RegOrVal);
+                            }
+                        }
                     }
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    continue;
                 }
             }
         }
 
-        private void CheckRegOrVal(string[] reg)
+        private void CheckRegBOrVal(string[] regB)
         {
-            for (int i = 0; i < reg.Length - 1; i++)
+            for (int i = 0; i < regB.Length - 1; i++)
             {
-                if (_commands[i].Equals(string.Empty) ||
-                    _commands[i].Equals(OpertationEnum.End.ToString())) continue;
-                else
+                try
                 {
-                    double tmp;
-
-                    if (!double.TryParse(reg[i], out tmp))
+                    if (_commands[i].Equals(string.Empty) ||
+                        _commands[i].Equals(OpertationEnum.End.ToString())) continue;
+                    else if (_commands[i].Equals(OpertationEnum.CrtVarD.ToString()) ||
+                             _commands[i].Equals(OpertationEnum.Jmp.ToString()) ||
+                             _commands[i].Equals(OpertationEnum.NextElem.ToString()) ||
+                             _commands[i].Equals(OpertationEnum.End.ToString()) ||
+                             _commands[i].Equals(OpertationEnum.Out.ToString()))
                     {
-                        if (!double.TryParse(reg[i].Substring(0, reg[i].Length - 1), out tmp))
+                        if (regB[i].Equals(string.Empty)) continue;
+                    }
+                    else if (!_isCommands[i] && regB[i].Equals(string.Empty)) continue;
+                    else
+                    {
+                        double tmp;
+
+                        if (!double.TryParse(regB[i], out tmp))
                         {
-                            ErrorProvider.CreateError(i, reg[i], ErrorType.RegOrVal);
+                            if (!double.TryParse(regB[i].Substring(0, regB[i].Length - 1), out tmp))
+                            {
+                                ErrorProvider.CreateError(i, regB[i], ErrorType.RegOrVal);
+                            }
                         }
                     }
                 }
+                catch (IndexOutOfRangeException e)
+                {
+                    continue;
+                }
             }
+
         }
     }
 }

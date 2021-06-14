@@ -137,19 +137,19 @@ namespace EM3.ViewModel
             var regB = parser.SplitAndFormat(RegB);
 
             //TODO: Fix compiler and errors out
-            //bool result = _compiler.Compile(com, outReg, regA, regB);
+            bool result = _compiler.Compile(com, outReg, regA, regB);
 
-            //if (!result)
-            //{
-            //    var err = _compiler.ErrorProvider.GetErrors();
+            if (!result)
+            {
+                var err = _compiler.ErrorProvider.GetErrors();
 
-            //    foreach (Error e in err)
-            //    {
-            //        Errors.Add(e);
-            //    }
+                foreach (Error e in err)
+                {
+                    Errors.Add(e);
+                }
 
-            //    return;
-            //}
+                return;
+            }
 
             for (int i = 0; i < com.Length && !_isBreak; i++)
             {
@@ -430,10 +430,12 @@ namespace EM3.ViewModel
             Errors.Clear();
             Out = null;
             _current = null;
+            _compiler.ErrorProvider.ClearError();
         }
 
         public Em3Command RunCommand => new(o =>
         {
+            Reset();
             Run();
         });
 
