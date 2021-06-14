@@ -26,7 +26,10 @@ namespace EM3.ViewModel
         private bool _isBreak = false;
         private int _jmpCount = 0;
         private int _lastElement = 0;
+        private int _start = 0;
+        private int _end = 1;
         private Register _current;
+        private string _currCommand;
 
         public string FileContent
         {
@@ -92,18 +95,19 @@ namespace EM3.ViewModel
             }
         }
 
-        //public string Errors
-        //{
-        //    get => _errors;
-        //    set
-        //    {
-        //        _errors = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
         public ObservableCollection<Error> Errors { get; private set; }
 
         public ObservableCollection<Register> Registers { get; }
+
+        public string CurrCommand
+        {
+            get => _currCommand;
+            set
+            {
+                _currCommand = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -129,30 +133,38 @@ namespace EM3.ViewModel
         
 
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
-        private void Run()
+        private void Run(int? startIndex, int? endIndex)
         {
             var com = parser.SplitAndFormat(Commands);
             var outReg = parser.SplitAndFormat(OutReg);
             var regA = parser.SplitAndFormat(RegA);
             var regB = parser.SplitAndFormat(RegB);
 
-            //TODO: Fix compiler and errors out
-            bool result = _compiler.Compile(com, outReg, regA, regB);
-
-            if (!result)
+            if (startIndex == null && endIndex == null)
             {
-                var err = _compiler.ErrorProvider.GetErrors();
+                startIndex = 0;
+                endIndex = com.Length;
 
-                foreach (Error e in err)
+                bool result = _compiler.Compile(com, outReg, regA, regB);
+
+                if (!result)
                 {
-                    Errors.Add(e);
+                    var err = _compiler.ErrorProvider.GetErrors();
+
+                    foreach (Error e in err)
+                    {
+                        Errors.Add(e);
+                    }
+
+                    return;
                 }
-
-                return;
             }
+            else if (startIndex == null || endIndex == null) return;
 
-            for (int i = 0; i < com.Length && !_isBreak; i++)
+            for (int i = (int)startIndex; i < endIndex && !_isBreak; i++)
             {
+                CurrCommand = $"{i + 1}) {com[i]}";
+
                 if (com[i] == OpertationEnum.Sum.ToString())
                 {
 
@@ -282,6 +294,8 @@ namespace EM3.ViewModel
                     if (_jmpCount < to - 1)
                     {
                         i = line - 2;
+                        _start = line - 2;
+                        _end = line - 1;
                         _jmpCount++;
                     }
                     else
@@ -379,14 +393,20 @@ namespace EM3.ViewModel
                         if (val < 0)
                         {
                             i = ltz - 2;
+                            _start = ltz - 2;
+                            _end = ltz - 1;
                         }
                         else if (val == 0)
                         {
                             i = ez - 2;
+                            _start = ez- 2;
+                            _end = ez - 1;
                         }
                         else
                         {
                             i = mtz - 2;
+                            _start = mtz - 2;
+                            _end = mtz - 1;
                         }
                     }
                 }
@@ -431,12 +451,15 @@ namespace EM3.ViewModel
             Out = null;
             _current = null;
             _compiler.ErrorProvider.ClearError();
+            _start = 0;
+            _end = 1;
+            CurrCommand = string.Empty;
         }
 
         public Em3Command RunCommand => new(o =>
         {
             Reset();
-            Run();
+            Run(null, null);
         });
 
         public Em3Command ParseCommand => new(o =>
@@ -452,6 +475,13 @@ namespace EM3.ViewModel
         public Em3Command ReloadCommand => new(o =>
         {
             Reset();
+        });
+
+        public Em3Command DebugCommand => new(o =>
+        {
+            Run(_start, _end);
+            _start++;
+            _end++;
         });
     }
 }

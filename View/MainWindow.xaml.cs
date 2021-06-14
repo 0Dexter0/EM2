@@ -330,6 +330,17 @@ namespace EM3.View
             TbOther.Text += "\n";
         }
 
-        
+
+        private void MiDebug_OnClick(object sender, RoutedEventArgs e)
+        {
+            MiNext.Visibility = Visibility.Visible;
+            MiStop.Visibility = Visibility.Visible;
+        }
+
+        private void MiStop_OnClick(object sender, RoutedEventArgs e)
+        {
+            MiNext.Visibility = Visibility.Hidden;
+            MiStop.Visibility = Visibility.Hidden;
+        }
     }
 }
